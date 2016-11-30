@@ -20,13 +20,21 @@
 	//	alert(clicked_item.text());
 	//});
 
-	var $sidebar_and_wrraper = $("#sidebar,#wrapper");
+	$("#print_page").click(function () {
+		print();
+	});
 
+	var $sidebar_and_wrraper = $("#sidebar,#wrapper");
+	var $icon = $("#sidebar_toggle i.fa");
 	$("#sidebar_toggle").on("click", function () {
 		$sidebar_and_wrraper.toggleClass("hide-sidebar");
-		if ($sidebar_and_wrraper.hasClass("hide-sidebar"))
-			$(this).text("Show sidebar");
-		else
-			$(this).text("Hide sidebar");
+		if ($sidebar_and_wrraper.hasClass("hide-sidebar")) {
+			$icon.removeClass("fa-angle-left");
+			$icon.addClass("fa-angle-right");
+		}
+		else {
+			$icon.addClass("fa-angle-left");
+			$icon.removeClass("fa-angle-right");
+		}
 	});
 })();
