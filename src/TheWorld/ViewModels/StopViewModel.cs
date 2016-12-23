@@ -7,17 +7,20 @@ using System.Threading.Tasks;
 
 namespace TheWorld.ViewModels
 {
-    public class ContectViewModel
+    public class StopViewModel
     {
         [Required]
+        [StringLength(100, MinimumLength = 5)]
         public string Name { get; set; }
+        public double Latitude { get; set; }
+
+
+        public double Longitude { get; set; }
 
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public int Order { get; set; }
 
         [Required]
-        [StringLength(4096, MinimumLength = 10)]
-        public string Message { get; set; }
+        public DateTime Arrival { get; set; }
     }
 }

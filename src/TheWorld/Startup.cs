@@ -10,70 +10,84 @@ using Microsoft.Extensions.Logging;
 using TheWorld.Services;
 using Microsoft.Extensions.Configuration;
 using TheWorld.Models;
+using Newtonsoft.Json.Serialization;
+using AutoMapper;
+using TheWorld.ViewModels;
 
 namespace TheWorld
 {
-	public class Startup
-	{
-		private IHostingEnvironment _environment;
-		private IConfigurationRoot _config;
+    public class Startup
+    {
+        private IHostingEnvironment _environment;
+        private Microsoft.Extensions.Configuration.IConfigurationRoot _config;
 
-		public Startup(IHostingEnvironment environment)
-		{
-			_environment = environment;
+        public Startup(IHostingEnvironment environment)
+        {
+            _environment = environment;
 
-			var builder = new ConfigurationBuilder()
-				.SetBasePath(_environment.ContentRootPath)
-				.AddJsonFile("config.json")
-				.AddEnvironmentVariables();
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(_environment.ContentRootPath)
+                .AddJsonFile("config.json")
+                .AddEnvironmentVariables();
 
-			_config = builder.Build();
-		}
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddSingleton(_config);
-			if (_environment.IsDevelopment())
-			{
-				services.AddScoped<IMailService, DebugMailService>();
-			}
-			else
-			{
-				//ToDo: Implement real mail service.
-			}
+            _config = builder.Build();
+        }
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton(_config);
+            if (_environment.IsDevelopment())
+            {
+                services.AddScoped<IMailService, DebugMailService>();
+            }
+            else
+            {
+                //ToDo: Implement real mail service.
+            }
 
-			services.AddDbContext<WorldContext>();
-			services.AddScoped<IWorldRepository, WorldRepository>();
-			services.AddTransient<WorldContextSeedData>();
-			services.AddLogging();
-			services.AddMvc();
-		}
+            services.AddDbContext<WorldContext>();
+            services.AddScoped<IWorldRepository, WorldRepository>();
+            services.AddTransient<GeoCoordsService>();
+            services.AddTransient<WorldContextSeedData>();
+            services.AddLogging();
+            services.AddMvc()
+                .AddJsonOptions(config =>
+                {
+                    config.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, WorldContextSeedData seeder, ILoggerFactory factory)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-				factory.AddDebug(LogLevel.Information);
-			}
-			else
-			{
-				factory.AddDebug(LogLevel.Error);
-			}
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, WorldContextSeedData seeder, ILoggerFactory factory)
+        {
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<TripViewModel, Trip>().ReverseMap();
+                config.CreateMap<StopViewModel, Stop>().ReverseMap();
+            });
 
-			app.UseStaticFiles();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                factory.AddDebug(LogLevel.Information);
+            }
+            else
+            {
+                factory.AddDebug(LogLevel.Error);
+            }
 
-			app.UseMvc(config =>
-			{
-				config.MapRoute(
-					name: "Default",
-					template: "{controller}/{action}/{id?}",
-					defaults: new { Controller = "App", action = "Index" });
-			});
+            app.UseStaticFiles();
 
-			seeder.EnsureSeedData().Wait();
-		}
-	}
+            app.UseMvc(config =>
+            {
+                config.MapRoute(
+                    name: "Default",
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { Controller = "App", action = "Index" });
+            });
+
+            seeder.EnsureSeedData().Wait();
+        }
+    }
 }

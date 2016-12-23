@@ -1,8 +1,11 @@
 {
-	"MailSettings": {
-		"ToAddress": "lionsimonlion@gmail.com"
-	},
-	"ConnectionStrings": {
-		"WorldContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=TheWorldDB;Trusted_Connection=true;MultipleActiveResultSets=true;"
-	}
+  "MailSettings": {
+    "ToAddress": "lionsimonlion@gmail.com"
+  },
+  "ConnectionStrings": {
+    "WorldContextConnection": "Server=(localdb)\\MSSQLLocalDB;Database=TheWorldDB;Trusted_Connection=true;MultipleActiveResultSets=true;"
+  },
+  "Keys": {
+    "BingKey": "KyJrVCMBzZkKwxD8MVYm~cbOijbSNhDGApciosqbbdw~Ao3TbQA3i9TBTHRcQnNDc4QpiOfyNaDzkTqBQBFk0jWPLFc2Tmvqr8JrKKPd3p0-"
+  }
 }

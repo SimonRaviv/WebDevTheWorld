@@ -7,17 +7,11 @@ using System.Threading.Tasks;
 
 namespace TheWorld.ViewModels
 {
-    public class ContectViewModel
+    public class TripViewModel
     {
         [Required]
+        [StringLength(100, MinimumLength = 5)]
         public string Name { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(4096, MinimumLength = 10)]
-        public string Message { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }
