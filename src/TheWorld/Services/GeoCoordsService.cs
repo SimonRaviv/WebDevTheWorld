@@ -1,30 +1,31 @@
-﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace TheWorld.Services
 {
     public class GeoCoordsService
     {
-        private Microsoft.Extensions.Configuration.IConfigurationRoot _config;
+        private IConfigurationRoot _config;
         private ILogger<GeoCoordsService> _logger;
 
-        public GeoCoordsService(ILogger<GeoCoordsService> logger, Microsoft.Extensions.Configuration.IConfigurationRoot config)
+        public GeoCoordsService(ILogger<GeoCoordsService> logger,
+          IConfigurationRoot config)
         {
             _logger = logger;
             _config = config;
         }
 
-        public async Task<GetCoordsResults> GetCoordsAsync(string name)
+        public async Task<GeoCoordsResult> GetCoordsAsync(string name)
         {
-            var result = new GetCoordsResults()
+            var result = new GeoCoordsResult()
             {
                 Success = false,
                 Message = "Failed to get coordinates"
@@ -32,7 +33,7 @@ namespace TheWorld.Services
 
             var apiKey = _config["Keys:BingKey"];
             var encodedName = WebUtility.UrlEncode(name);
-            var url = $"https://dev.virtualearth.net/REST/v1/Locations?q={encodedName}&key={apiKey}";
+            var url = $"http://dev.virtualearth.net/REST/v1/Locations?q={encodedName}&key={apiKey}";
 
             var client = new HttpClient();
 
@@ -62,6 +63,7 @@ namespace TheWorld.Services
                     result.Message = "Success";
                 }
             }
+
             return result;
         }
     }

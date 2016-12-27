@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.Extensions.Logging;
 
 namespace TheWorld.Models
 {
@@ -21,14 +19,13 @@ namespace TheWorld.Models
             _logger = logger;
         }
 
-        public void AddStop(string tripName, Stop newStop)
+        public void AddStop(string tripName, string username, Stop newStop)
         {
-            var trip = GetTripByName(tripName);
+            var trip = GetTripByName(tripName, username);
 
-            if (trip  != null)
+            if (trip != null)
             {
                 trip.Stops.Add(newStop);
-                _context.Stops.Add(newStop);
             }
         }
 
@@ -39,16 +36,33 @@ namespace TheWorld.Models
 
         public IEnumerable<Trip> GetAllTrips()
         {
-            _logger.LogInformation("Getting all trips from the DataBase");
+            _logger.LogInformation("Getting All Trips from the Database");
+
             return _context.Trips.ToList();
         }
 
-        public Trip GetTripByName(string tripName)
+        public Trip GetTripByName(string tripName, string username)
         {
             return _context.Trips
-                .Include(t => t.Stops)
-                .Where(t => t.Name == tripName)
-                .FirstOrDefault();
+              .Include(t => t.Stops)
+              .Where(t => t.Name == tripName && t.UserName == username)
+              .FirstOrDefault();
+        }
+
+        public IEnumerable<Trip> GetTripsByUsername(string name)
+        {
+            return _context.Trips
+              .Include(t => t.Stops)
+              .Where(t => t.UserName == name)
+              .ToList();
+        }
+
+        public Trip GetUserTripByName(string tripName, string username)
+        {
+            return _context.Trips
+              .Include(t => t.Stops)
+              .Where(t => t.Name == tripName && t.UserName == username)
+              .FirstOrDefault();
         }
 
         public async Task<bool> SaveChangesAsync()

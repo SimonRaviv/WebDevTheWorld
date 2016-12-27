@@ -1,6 +1,6 @@
 ﻿namespace TheWorld.Services
 {
-    public class GetCoordsResults
+    public class GeoCoordsResult
     {
         public bool Success { get; set; }
         public string Message { get; set; }

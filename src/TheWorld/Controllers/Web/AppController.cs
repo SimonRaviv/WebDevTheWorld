@@ -1,32 +1,43 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TheWorld.ViewModels;
-using TheWorld.Services;
 using Microsoft.Extensions.Configuration;
-using TheWorld.Models;
 using Microsoft.Extensions.Logging;
+using TheWorld.Models;
+using TheWorld.Services;
+using TheWorld.ViewModels;
 
-namespace TheWorld.Controllers.Web.App
+namespace TheWorld.Controllers.Web
 {
     public class AppController : Controller
     {
         private IMailService _mailService;
-        private Microsoft.Extensions.Configuration.IConfigurationRoot _config;
+        private IConfigurationRoot _config;
         private IWorldRepository _repository;
         private ILogger<AppController> _logger;
 
-        public AppController(IMailService mailService, Microsoft.Extensions.Configuration.IConfigurationRoot config, IWorldRepository repository, ILogger<AppController> logger)
+        public AppController(IMailService mailService,
+          IConfigurationRoot config,
+          IWorldRepository repository,
+          ILogger<AppController> logger)
         {
             _mailService = mailService;
             _config = config;
             _repository = repository;
             _logger = logger;
         }
+
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Trips()
         {
             try
             {
@@ -36,7 +47,7 @@ namespace TheWorld.Controllers.Web.App
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to get trips in Index page:{ex.Message}");
+                _logger.LogError($"Failed to get trips in Index page: {ex.Message}");
                 return Redirect("/error");
             }
         }
@@ -47,14 +58,22 @@ namespace TheWorld.Controllers.Web.App
         }
 
         [HttpPost]
-        public IActionResult Contact(ContectViewModel model)
+        public IActionResult Contact(ContactViewModel model)
         {
+            if (model.Email.Contains("aol.com"))
+            {
+                ModelState.AddModelError("", "We don't support AOL addresses");
+            }
+
             if (ModelState.IsValid)
             {
                 _mailService.SendMail(_config["MailSettings:ToAddress"], model.Email, "From TheWorld", model.Message);
+
                 ModelState.Clear();
+
                 ViewBag.UserMessage = "Message Sent";
             }
+
             return View();
         }
 
@@ -62,5 +81,6 @@ namespace TheWorld.Controllers.Web.App
         {
             return View();
         }
+
     }
 }

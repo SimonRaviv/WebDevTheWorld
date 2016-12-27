@@ -1,9 +1,9 @@
-﻿@model TheWorld.ViewModels.ContectViewModel
+@model TheWorld.ViewModels.ContactViewModel
 @{
-    ViewBag.Title = "Contact page";
+    ViewBag.Title = "Contact Page";
 }
-@section scripts
-{
+
+@section scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }
@@ -11,11 +11,11 @@
     <div class="col-md-6 col-md-offset-3">
         <h2>Contact</h2>
         <form method="post">
-            <div asp-validation-summry="ModelOnly"></div>
-            @if (ViewBag.UserMessage != null)
+            @if (ViewBag.Message != null)
             {
-                <div>@ViewBag.UserMessage</div>
+                <div>@ViewBag.Message</div>
             }
+            <div asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="Name">Name</label>
                 <input asp-for="Name" class="form-control" />
@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
                 <a asp-controller="App" asp-action="Index" class="btn btn-default">Cancel</a>
-                <input type="submit" value="Send message" class="btn btn-success" />
+                <input type="submit" value="Send Message" class="btn btn-success" />
             </div>
         </form>
     </div>

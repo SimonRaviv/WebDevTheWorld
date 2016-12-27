@@ -1,40 +1,34 @@
-﻿/*site.js*/
-
+// site.js
 (function () {
 
-    //var user_name_element = $("#user_name");
-    //user_name_element.text("Simon Raviv");
+    //var ele = $("#username");
+    //ele.text("Shawn Wildermuth");
 
     //var main = $("#main");
     //main.on("mouseenter", function () {
-    //	main.style = "background-color: #888;";
+    //  main.style = "background-color: #888;";
     //});
-
     //main.on("mouseleave", function () {
-    //	main.style = "";
+    //  main.style = "";
     //});
 
-    //var menu_items = $("ul.menu li a");
-    //menu_items.on("click", function () {
-    //	var clicked_item = $(this);
-    //	alert(clicked_item.text());
+    //var menuItems = $("ul.menu li a");
+    //menuItems.on("click", function () {
+    //  var me = $(this);
+    //  alert(me.text());
     //});
 
-    $("#print_page").click(function () {
-        print();
-    });
+    var $sidebarAndWrapper = $("#sidebar,#wrapper");
+    var $icon = $("#sidebarToggle i.fa");
 
-    var $sidebar_and_wrraper = $("#sidebar,#wrapper");
-    var $icon = $("#sidebar_toggle i.fa");
-    $("#sidebar_toggle").on("click", function () {
-        $sidebar_and_wrraper.toggleClass("hide-sidebar");
-        if ($sidebar_and_wrraper.hasClass("hide-sidebar")) {
+    $("#sidebarToggle").on("click", function () {
+        $sidebarAndWrapper.toggleClass("hide-sidebar");
+        if ($sidebarAndWrapper.hasClass("hide-sidebar")) {
             $icon.removeClass("fa-angle-left");
             $icon.addClass("fa-angle-right");
-        }
-        else {
-            $icon.addClass("fa-angle-left");
+        } else {
             $icon.removeClass("fa-angle-right");
+            $icon.addClass("fa-angle-left");
         }
     });
 })();
